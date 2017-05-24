@@ -3,6 +3,8 @@ import os
 import time
 import logging
 import json
+import string
+import random
 from datetime import datetime
 from service import Service
 from multiprocessing.dummy import Pool as ThreadPool
@@ -81,7 +83,13 @@ class Diglett(Service):
                 ftype = e
                 break
         dest = os.path.join(self.today_dir, ftype)
-        shutil.move(file, dest)
+        try:
+            shutil.move(file, dest)
+        except:
+            fname =os.path.splitext(os.path.basename(file))
+            rnd =''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            dest = os.path.join(self.today_dir, ftype, fname[0]+rnd+fname[1])
+            shutil.move(file, dest)
 
     def run(self):
         """
