@@ -1,4 +1,6 @@
+import asyncio
 from diglett import Diglett
+
 
 if __name__ == '__main__':
     import sys
@@ -13,9 +15,6 @@ if __name__ == '__main__':
         service.start()
     elif cmd == 'stop':
         service.stop()
-    elif cmd == 'restart':
-        service.stop()
-        service.start()
     elif cmd == 'status':
         if service.is_running():
             print("Service is running.")
