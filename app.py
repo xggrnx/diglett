@@ -1,16 +1,14 @@
-import asyncio
+#!/usr/bin/env python3
 from diglett import Diglett
-
 
 if __name__ == '__main__':
     import sys
 
+    service = Diglett('diglett', pid_dir='/tmp')
     if len(sys.argv) != 2:
         sys.exit('Syntax: %s COMMAND' % sys.argv[0])
 
     cmd = sys.argv[1].lower()
-    service = Diglett('diglett', pid_dir='/tmp')
-
     if cmd == 'start':
         service.start()
     elif cmd == 'stop':

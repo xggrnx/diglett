@@ -12,7 +12,7 @@ class Config:
     _CFG_PATH = os.path.join(os.path.expanduser('~'), '.diglett')
 
     @staticmethod
-    def get_or_create() -> dict:
+    def get_or_create()->dict:
         """
         Generate and save or read config from config file
         time - time to sleep
@@ -56,7 +56,7 @@ class Diglett(Service):
             for d in self.cfg['file_types'].keys():
                 os.path.os.makedirs(os.path.join(self.today_dir, d))
 
-    def _get_file_list(self) -> list:
+    def _get_file_list(self)->list:
         """
         get files from working directory filtered by ext
         :return: file list
