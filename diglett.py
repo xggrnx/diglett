@@ -15,6 +15,10 @@ class Config:
     def get_or_create() -> dict:
         """
         Generate and save or read config from config file
+        time - time to sleep
+        process - number copy process
+        dir_format - destination directory format
+        
         :return: dict
         """
         if os.path.isfile(Config._CFG_PATH):
@@ -83,11 +87,11 @@ class Diglett(Service):
         Go go go        
         """
         while not self.got_sigterm():
-            self.logger.info("Go digg!111")
+            self.logger.info("Go digg!")
             self._check_or_create_dir()
             files = self._get_file_list()
             pool = ThreadPool(self.cfg['process'])
             pool.map(self._move, files)
             pool.close()
             pool.join()
-            time.sleep(10)
+            time.sleep(self.cfg['time'])
