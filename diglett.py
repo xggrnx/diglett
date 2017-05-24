@@ -40,7 +40,7 @@ class Config:
 class Diglett(Service):
     def __init__(self, *args, **kwargs):
         super(Diglett, self).__init__(*args, **kwargs)
-        self.logger.addHandler(logging.FileHandler('/tmp/dlc.log'))
+        self.logger.addHandler(logging.FileHandler('/tmp/digglet.log'))
         self.logger.setLevel(logging.DEBUG)
         self.cfg = Config.get_or_create()
         date_now = datetime.now().strftime(self.cfg['dir_format'])
