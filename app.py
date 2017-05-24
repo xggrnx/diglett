@@ -13,6 +13,7 @@ if __name__ == '__main__':
         service.start()
     elif cmd == 'stop':
         service.stop()
+        print('Stop digg')
     elif cmd == 'status':
         if service.is_running():
             print("Service is running.")

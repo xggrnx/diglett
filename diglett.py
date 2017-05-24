@@ -65,7 +65,8 @@ class Diglett(Service):
 
         for f in os.listdir(self.cfg['working_directory']):
             f = os.path.join(self.cfg['working_directory'], f)
-            if os.path.isfile(f) and os.path.splitext(f)[1].replace('.', '') in self._exts:
+            f_ext = os.path.splitext(f)[1].replace('.', '')
+            if os.path.isfile(f) and f_ext != '' and f_ext in self._exts:
                 files.append(f)
         return files
 
