@@ -20,7 +20,7 @@ class Config:
         time - time to sleep
         process - number copy process
         dir_format - destination directory format
-        
+
         :return: dict
         """
         if os.path.isfile(Config._CFG_PATH):
@@ -45,8 +45,6 @@ class Diglett(Service):
         self.logger.addHandler(logging.FileHandler('/tmp/digglet.log'))
         self.logger.setLevel(logging.DEBUG)
         self.cfg = Config.get_or_create()
-        date_now = datetime.now().strftime(self.cfg['dir_format'])
-        self.today_dir = os.path.join(self.cfg['working_directory'], date_now)
         self._exts = "".join([self.cfg['file_types'][e]
                               for e in self.cfg['file_types'].keys()])
 
@@ -54,6 +52,9 @@ class Diglett(Service):
         """
         check or  create today directory
         """
+        #update today_dir
+        date_now = datetime.now().strftime(self.cfg['dir_format'])
+        self.today_dir = os.path.join(self.cfg['working_directory'], date_now)
         if not os.path.isdir(self.today_dir):
             for d in self.cfg['file_types'].keys():
                 os.path.os.makedirs(os.path.join(self.today_dir, d))
@@ -93,7 +94,7 @@ class Diglett(Service):
 
     def run(self):
         """
-        Go go go        
+        Go go go
         """
         while not self.got_sigterm():
             self.logger.info("Go digg!")
