@@ -5,9 +5,26 @@ import logging
 import json
 import string
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 from service import Service
 from multiprocessing.dummy import Pool as ThreadPool
+
+
+def _removeEmptyFolders(path, remove_root=True):
+    # Function to remove empty folders
+    if not os.path.isdir(path):
+        return
+    # remove empty subfolders
+    files = os.listdir(path)
+    if len(files):
+        for f in files:
+            full_path = os.path.join(path, f)
+            if os.path.isdir(full_path):
+                _removeEmptyFolders(full_path)
+    # if folder empty, delete it
+    files = os.listdir(path)
+    if len(files) == 0 and remove_root:
+        os.rmdir(path)
 
 
 class Config:
@@ -52,12 +69,27 @@ class Diglett(Service):
         """
         check or  create today directory
         """
-        #update today_dir
+        # update today_dir
         date_now = datetime.now().strftime(self.cfg['dir_format'])
         self.today_dir = os.path.join(self.cfg['working_directory'], date_now)
         if not os.path.isdir(self.today_dir):
             for d in self.cfg['file_types'].keys():
                 os.path.os.makedirs(os.path.join(self.today_dir, d))
+                self._clear_empty_folders()
+
+    def _clear_empty_folders(self):
+        """
+        Remove yesterday folder if it empty
+        :return: None
+        """
+        date_now = datetime.today()
+        yesterday = date_now - timedelta(days=1)
+        yesterday = os.path.join(self.cfg['working_directory'],
+                                 yesterday.strftime(self.cfg['dir_format']))
+        if os.path.isdir(yesterday):
+            print('Hello')
+            for d in self.cfg['file_types'].keys():
+                _removeEmptyFolders(os.path.join(yesterday, d))
 
     def _get_file_list(self)->list:
         """
@@ -77,7 +109,7 @@ class Diglett(Service):
         """
         Move files to today_dir
         """
-        ext = os.path.splitext(file)[1].replace('.', '')
+        ext = os.path.splitext(file)[1].replace('.', '').lower()
         ftype = False
         for e in self.cfg['file_types'].keys():
             if ext in self.cfg['file_types'][e]:
@@ -87,8 +119,8 @@ class Diglett(Service):
         try:
             shutil.move(file, dest)
         except:
-            fname =os.path.splitext(os.path.basename(file))
-            rnd =''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            fname = os.path.splitext(os.path.basename(file))
+            rnd = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
             dest = os.path.join(self.today_dir, ftype, fname[0]+rnd+fname[1])
             shutil.move(file, dest)
 
